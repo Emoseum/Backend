@@ -1,0 +1,17 @@
+# Node modules
+node_modules/
+
+# Environment Var. (MongoDB URI..)
+.env
+
+# Log Files
+*.log
+
+# System Files (Mac/Windows)
+.DS_Store
+Thumbs.db
+
+# test Files
+test*.js
+_*
+*.md

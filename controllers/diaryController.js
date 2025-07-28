@@ -1,0 +1,223 @@
+//controllers/diaryController.js
+import Diary from '../models/Diary.js';
+import CryptoJS from 'crypto-js';
+import jwt from 'jsonwebtoken';
+import { ObjectId } from 'mongodb';
+
+// 일기 작성
+export async function writeDiary(req, res) {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: 'No token provided' });
+
+    const jwtKey = process.env.JWT_SECRET;
+    const secretKey = process.env.SECRET_KEY;
+    if (!jwtKey || !secretKey) return res.status(500).json({ error: 'Missing keys' });
+
+    const decoded = jwt.verify(token, jwtKey);
+    const userId = decoded.userId;
+
+    const { text } = req.body;
+    if (!text) return res.status(400).json({ error: 'Text is required' });
+
+    const encryptedText = CryptoJS.AES.encrypt(text, secretKey).toString();
+    const placeholderImage = 'https://fbffiyvnxkshgxepiimj.supabase.co/storage/v1/object/public/emoseum-images/emoseum_icon.png';
+
+    const diary = new Diary({
+      userId,
+      text: encryptedText,
+      imagePath: placeholderImage,
+      createdAt: new Date().toISOString()
+    });
+
+    await diary.save();
+    res.status(200).json({ message: 'Diary saved' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+/*
+// 일기 작성 AI 서버 수정본
+
+import { generateDiaryMedia } from '../utils/generateDiaryMedia.js'; // 꼭 상단에 import 추가
+
+// 일기 작성 및 AI 서버 요청 수정본
+export async function writeDiary(req, res) {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: 'No token provided' });
+
+    const jwtKey = process.env.JWT_SECRET;
+    const secretKey = process.env.SECRET_KEY;
+    if (!jwtKey || !secretKey) return res.status(500).json({ error: 'Missing keys' });
+
+    const decoded = jwt.verify(token, jwtKey);
+    const userId = decoded.userId;
+
+    const { text } = req.body;
+    if (!text) return res.status(400).json({ error: 'Text is required' });
+
+    const encryptedText = CryptoJS.AES.encrypt(text, secretKey).toString();
+    const placeholderImage = 'https://fbffiyvnxkshgxepiimj.supabase.co/storage/v1/object/public/emoseum-images/emoseum_icon.png';
+
+    const diary = new Diary({
+      userId,
+      text: encryptedText,
+      imagePath: placeholderImage,
+      createdAt: new Date().toISOString()
+    });
+
+    await diary.save();
+
+    // AI 서버 연동: 키워드 + 이미지 생성 → DB 업데이트
+    generateDiaryMedia(diary._id, text);
+
+    res.status(200).json({ message: 'Diary saved and media generated' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+*/
+
+// 일기 상세 조회
+export async function getDiaryDetail(req, res) {
+  try {
+    const { id } = req.params;
+    const secretKey = process.env.SECRET_KEY;
+
+    const diary = await Diary.findById(id);
+    if (!diary) return res.status(404).json({ error: 'Diary not found' });
+
+    const decryptedText = CryptoJS.AES.decrypt(diary.text, secretKey).toString(CryptoJS.enc.Utf8);
+
+    res.status(200).json({
+      _id: diary._id,
+      userId: diary.userId,
+      text: decryptedText,
+      keywords: diary.keywords || [],
+      imagePath: diary.imagePath,
+      createdAt: diary.createdAt,
+      updatedAt: diary.updatedAt
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// 일기 전체 조회 (복호화 O)
+export async function getAllDiaries(req, res) {
+  try {
+    const userId = req.user?.userId;
+    const secretKey = process.env.SECRET_KEY;
+
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+    const diaries = await Diary.find({ userId }).sort({ createdAt: -1 });
+
+    const response = diaries.map(d => {
+      const decryptedText = CryptoJS.AES.decrypt(d.text, secretKey).toString(CryptoJS.enc.Utf8);
+
+      return {
+        _id: d._id,
+        text: decryptedText,
+        title: d.title || null,
+        tags: d.tags || [],
+        keywords: d.keywords || [],
+        imagePath: d.imagePath,
+        createdAt: d.createdAt
+      };
+    });
+
+    res.status(200).json(response);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// 일기 삭제
+export async function deleteDiary(req, res) {
+  try {
+    const userId = req.user?.userId;
+    const diaryId = req.params.id;
+
+    if (!userId || !diaryId) {
+      return res.status(400).json({ error: 'Missing userId or diaryId' });
+    }
+
+    const result = await Diary.deleteOne({ _id: new ObjectId(diaryId), userId });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Diary not found or unauthorized' });
+    }
+
+    res.status(200).json({ message: 'Diary deleted' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// 일기 제목 업데이트
+export async function updateDiaryTitle(req, res) {
+  try {
+    const userId = req.user?.userId;
+    const diaryId = req.params.id;
+    const { title } = req.body;
+
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    if (!title || typeof title !== 'string') {
+      return res.status(400).json({ error: 'Invalid title' });
+    }
+
+    const result = await Diary.findOneAndUpdate(
+      { _id: new ObjectId(diaryId), userId },
+      {
+        $set: {
+          title,
+          updatedAt: new Date().toISOString()
+        }
+      },
+      { new: true }
+    );
+
+    if (!result) {
+      return res.status(404).json({ error: 'Diary not found or unauthorized' });
+    }
+
+    res.status(200).json({ message: 'Title updated', title: result.title });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// 일기 해시태그 업데이트
+export async function updateDiaryTags(req, res) {
+  try {
+    const userId = req.user?.userId;
+    const diaryId = req.params.id;
+    const { tags } = req.body;
+
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    if (!Array.isArray(tags)) return res.status(400).json({ error: 'Tags must be an array' });
+
+    const result = await Diary.findOneAndUpdate(
+      { _id: new ObjectId(diaryId), userId },
+      {
+        $set: {
+          tags,
+          updatedAt: new Date().toISOString()
+        }
+      },
+      { new: true }
+    );
+
+    if (!result) return res.status(404).json({ error: 'Diary not found or unauthorized' });
+
+    res.status(200).json({ message: 'Tags updated', tags: result.tags });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
