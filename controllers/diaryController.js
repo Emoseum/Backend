@@ -227,9 +227,11 @@ export async function updateDiaryTags(req, res) {
 }
 
 // AI에서 일기 업데이트
+// AI에서 일기 업데이트
 export async function updateDiaryFromAI(req, res) {
   try {
     const { diary_id } = req.body;
+    console.log('[서버] 받은 요청 body:', req.body);
 
     if (!diary_id) {
       return res.status(400).json({ error: 'Missing diary_id' });
@@ -257,11 +259,9 @@ export async function updateDiaryFromAI(req, res) {
     });
 
   } catch (err) {
+    console.error('서버 오류:', err);
     res.status(500).json({ error: err.message });
   }
 }
 
-// AI에서 일기 업데이트 (별칭 함수)
-export async function updateDiaryFromAISession(req, res) {
-  return updateDiaryFromAI(req, res);
-}
+export const updateDiaryFromAISession = updateDiaryFromAI;
