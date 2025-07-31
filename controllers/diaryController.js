@@ -290,3 +290,28 @@ export async function updateFromAISession(req, res) {
 }
 
 export const updateDiaryFromAISession = updateDiaryFromAI;
+// AI 서버에서 일기 업데이트 받는 함수
+export async function updateFromAISession(req, res) {
+  try {
+    const { diary_id, keywords, imagePath } = req.body;
+    
+    // MongoDB에서 해당 일기 업데이트
+    const result = await Diary.findByIdAndUpdate(
+      diary_id,
+      { 
+        keywords: keywords,
+        imagePath: imagePath 
+      },
+      { new: true }
+    );
+    
+    if (!result) {
+      return res.status(404).json({ success: false, error: 'Diary not found' });
+    }
+    
+    res.json({ success: true, data: result });
+  } catch (error) {
+    console.error('Error updating diary from AI:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
