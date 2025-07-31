@@ -264,4 +264,29 @@ export async function updateDiaryFromAI(req, res) {
   }
 }
 
+// AI 세션에서 일기 업데이트 (API 엔드포인트용)
+export async function updateFromAISession(req, res) {
+  try {
+    const { diary_id, keywords, imagePath } = req.body;
+    
+    const result = await Diary.findByIdAndUpdate(
+      diary_id,
+      { 
+        keywords: keywords,
+        imagePath: imagePath,
+        updatedAt: new Date().toISOString()
+      },
+      { new: true }
+    );
+    
+    if (!result) {
+      return res.status(404).json({ success: false, error: 'Diary not found' });
+    }
+    
+    res.json({ success: true, data: result });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+
 export const updateDiaryFromAISession = updateDiaryFromAI;

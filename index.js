@@ -10,6 +10,7 @@ import diaryRoutes from './routes/diaryRoutes.js';
 import imageRoutes from './routes/imageRoutes.js'; // Supabase Image
 import depressionRoutes from './routes/depressionRoutes.js';
 import questionRoutes from './routes/questionRoutes.js';
+import aiWebhookRoutes from './routes/aiWebhookRoutes.js';
 
 import aiRoutes from './routes/aiRoutes.js';
 
@@ -32,6 +33,7 @@ connectDB().then(() => {
   app.use('/image', imageRoutes);
   app.use('/depression', depressionRoutes);
   app.use('/question', questionRoutes);
+  app.use('/webhook', aiWebhookRoutes);
   app.use('/api', aiRoutes);
   app.use("/api", diaryRoutes);
 
