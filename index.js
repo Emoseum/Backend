@@ -11,6 +11,8 @@ import imageRoutes from './routes/imageRoutes.js'; // Supabase Image
 import depressionRoutes from './routes/depressionRoutes.js';
 import questionRoutes from './routes/questionRoutes.js';
 
+import aiRoutes from './routes/aiRoutes.js';
+
 dotenv.config(); // .env Load
 
 const app = express();
@@ -30,6 +32,8 @@ connectDB().then(() => {
   app.use('/image', imageRoutes);
   app.use('/depression', depressionRoutes);
   app.use('/question', questionRoutes);
+  app.use('/api', aiRoutes);
+  app.use("/api", diaryRoutes);
 
   app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);

@@ -30,8 +30,12 @@ export async function writeDiary(req, res) {
       createdAt: new Date().toISOString()
     });
 
-    await diary.save();
-    res.status(200).json({ message: 'Diary saved' });
+    const savedDiary = await diary.save();
+
+    res.status(200).json({
+      _id: savedDiary._id,
+      message: 'Diary saved!'
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -220,4 +224,44 @@ export async function updateDiaryTags(req, res) {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+}
+
+// AI에서 일기 업데이트
+export async function updateDiaryFromAI(req, res) {
+  try {
+    const { diary_id } = req.body;
+
+    if (!diary_id) {
+      return res.status(400).json({ error: 'Missing diary_id' });
+    }
+
+    const result = await Diary.findByIdAndUpdate(
+      diary_id,
+      { 
+        $set: {
+          keywords: ['처리완료'],
+          title: '일기',
+          updatedAt: new Date().toISOString()
+        }
+      },
+      { new: true }
+    );
+
+    if (!result) {
+      return res.status(404).json({ error: 'Diary not found' });
+    }
+
+    res.status(200).json({ 
+      message: 'Diary updated successfully',
+      diary: result 
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// AI에서 일기 업데이트 (별칭 함수)
+export async function updateDiaryFromAISession(req, res) {
+  return updateDiaryFromAI(req, res);
 }
