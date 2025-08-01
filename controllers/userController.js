@@ -12,6 +12,18 @@ export const updateUserStyle = async (req, res) => {
     { new: true }
   );
 
+  // AI 서버에 화풍 업데이트 알림
+  try {
+    const aiServerUrl = process.env.AI_SERVER_URL || 'http://localhost:8000';
+    await fetch(`${aiServerUrl}/auth/update-style`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId })
+    });
+  } catch (aiError) {
+    console.warn('AI 서버 화풍 업데이트 알림 실패:', aiError.message);
+  }
+
   res.status(200).json({
     message: 'Style updated',
     style: updated.style

@@ -57,3 +57,21 @@ export const login = async (req, res) => {
     userId: user.userId
   });
 };
+
+// AI 서버용 사용자 정보 조회 (인증 없이)
+export const getUserInfoForAI = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    const user = await User.findOne({ userId });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    res.json({
+      userId: user.userId,
+      style: user.style || [],
+      createdAt: user.createdAt
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

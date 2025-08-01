@@ -1,6 +1,6 @@
 // routes/authRoutes.js
 import express from 'express';
-import { register, login, verifyToken } from '../controllers/authController.js';
+import { register, login, verifyToken, getUserInfoForAI } from '../controllers/authController.js';
 import { updateUserStyle } from '../controllers/userController.js';
 import { authenticateToken } from '../middleware/authenticateToken.js';
 import { updateDiaryTitle, updateDiaryTags } from '../controllers/diaryController.js';
@@ -18,4 +18,8 @@ router.patch('/style', authenticateToken, updateUserStyle);
 // 이미지 제목 수정
 router.patch('/diary/title/:id', authenticateToken, updateDiaryTitle);
 router.patch('/diary/tags/:id', authenticateToken, updateDiaryTags);
+
+// AI 서버용 사용자 정보 조회 (인증 없이)
+router.get('/user/:userId', getUserInfoForAI);
+
 export default router;
