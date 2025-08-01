@@ -11,6 +11,7 @@ import imageRoutes from './routes/imageRoutes.js'; // Supabase Image
 import depressionRoutes from './routes/depressionRoutes.js';
 import questionRoutes from './routes/questionRoutes.js';
 import aiWebhookRoutes from './routes/aiWebhookRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 import aiRoutes from './routes/aiRoutes.js';
 
@@ -34,6 +35,7 @@ connectDB().then(() => {
   app.use('/depression', depressionRoutes);
   app.use('/question', questionRoutes);
   app.use('/webhook', aiWebhookRoutes);
+  app.use('/user', userRoutes);
   app.use('/api', aiRoutes);
 
   app.listen(PORT, () => {
