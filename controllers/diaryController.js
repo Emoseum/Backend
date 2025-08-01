@@ -41,50 +41,6 @@ export async function writeDiary(req, res) {
   }
 }
 
-/*
-// 일기 작성 AI 서버 수정본
-
-import { generateDiaryMedia } from '../utils/generateDiaryMedia.js'; // 꼭 상단에 import 추가
-
-// 일기 작성 및 AI 서버 요청 수정본
-export async function writeDiary(req, res) {
-  try {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) return res.status(401).json({ error: 'No token provided' });
-
-    const jwtKey = process.env.JWT_SECRET;
-    const secretKey = process.env.SECRET_KEY;
-    if (!jwtKey || !secretKey) return res.status(500).json({ error: 'Missing keys' });
-
-    const decoded = jwt.verify(token, jwtKey);
-    const userId = decoded.userId;
-
-    const { text } = req.body;
-    if (!text) return res.status(400).json({ error: 'Text is required' });
-
-    const encryptedText = CryptoJS.AES.encrypt(text, secretKey).toString();
-    const placeholderImage = 'https://fbffiyvnxkshgxepiimj.supabase.co/storage/v1/object/public/emoseum-images/emoseum_icon.png';
-
-    const diary = new Diary({
-      userId,
-      text: encryptedText,
-      imagePath: placeholderImage,
-      createdAt: new Date().toISOString()
-    });
-
-    await diary.save();
-
-    // AI 서버 연동: 키워드 + 이미지 생성 → DB 업데이트
-    generateDiaryMedia(diary._id, text);
-
-    res.status(200).json({ message: 'Diary saved and media generated' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-}
-
-*/
-
 // 일기 상세 조회
 export async function getDiaryDetail(req, res) {
   try {
@@ -227,7 +183,6 @@ export async function updateDiaryTags(req, res) {
 }
 
 // AI에서 일기 업데이트
-// AI에서 일기 업데이트
 export async function updateDiaryFromAI(req, res) {
   try {
     const { diary_id } = req.body;
@@ -270,14 +225,16 @@ export async function updateDiaryFromAI(req, res) {
 // AI 서버에서 일기 업데이트 받는 함수
 export async function updateFromAISession(req, res) {
   try {
-    const { diary_id, keywords, imagePath } = req.body;
+    const { diary_id, keywords, imagePath, reflection_prompt } = req.body;
     
     // MongoDB에서 해당 일기 업데이트
     const result = await Diary.findByIdAndUpdate(
       diary_id,
       { 
         keywords: keywords,
-        imagePath: imagePath 
+        imagePath: imagePath,
+        reflection_prompt: reflection_prompt || '',
+        updatedAt: new Date().toISOString()
       },
       { new: true }
     );
