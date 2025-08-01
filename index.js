@@ -35,7 +35,6 @@ connectDB().then(() => {
   app.use('/question', questionRoutes);
   app.use('/webhook', aiWebhookRoutes);
   app.use('/api', aiRoutes);
-  app.use("/api", diaryRoutes);
 
   app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
