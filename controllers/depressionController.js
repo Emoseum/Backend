@@ -1,6 +1,7 @@
 import Phq9Result from '../models/PHQ9Result.js'
 import CesdResult from '../models/CESDResult.js'
 import { toAustriaISO } from '../utils/time.js'
+import axios from 'axios'
 
 /* PHQ-9 저장 */
 export const submitPhq9 = async (req, res) => {
@@ -16,6 +17,18 @@ export const submitPhq9 = async (req, res) => {
     scores,
     totalScore,
   })
+
+  // AI 서버에 PHQ-9 결과 전송
+  try {
+    await axios.post(`${process.env.AI_SERVER_URL}/api/psychometric/phq9`, {
+      user_id: req.user.userId,
+      phq9_score: totalScore,
+      scores: scores,
+      test_date: result.createdAt
+    })
+  } catch (error) {
+    console.log('AI 서버 PHQ-9 업데이트 실패:', error.message)
+  }
 
   res.status(201).json({
     id: result._id,
@@ -67,6 +80,18 @@ export const submitCesd = async (req, res) => {
     scores,
     totalScore,
   })
+
+  // AI 서버에 CES-D 결과 전송
+  try {
+    await axios.post(`${process.env.AI_SERVER_URL}/api/psychometric/cesd`, {
+      user_id: req.user.userId,
+      cesd_score: totalScore,
+      scores: scores,
+      test_date: result.createdAt
+    })
+  } catch (error) {
+    console.log('AI 서버 CES-D 업데이트 실패:', error.message)
+  }
 
   res.status(201).json({
     id: result._id,
