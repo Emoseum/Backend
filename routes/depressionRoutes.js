@@ -1,17 +1,4 @@
 // routes/depression.js
-// import express from 'express';
-// import { uploadDepressionScore, getUserScores, deleteDepressionScore} from '../controllers/depressionController.js';
-// import { authenticateToken } from '../middleware/authenticateToken.js';
-
-// const router = express.Router();
-
-// // 토큰 인증 후에 점수 저장하도록 설정
-// router.post('/upload', authenticateToken, uploadDepressionScore); // 점수 업로드
-// router.get('/list', authenticateToken, getUserScores); // 점수 불러오기
-// router.delete('/delete/:id', authenticateToken, deleteDepressionScore); // 점수 삭제
-
-// export default router;
-
 import express from 'express'
 import {
   submitPhq9,

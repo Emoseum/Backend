@@ -18,12 +18,10 @@ const UserSchema = new mongoose.Schema({
       'neonAbstract',
       'streetRealism'
     ],
-    default: ['warmCubism']
+    default: ['streetRealism']
   },
 
   createdAt: { type: String, required: true },            // ISO string
 });
 
-// const User = mongoose.model('User', UserSchema);
-// export default User;
 export default mongoose.model('User', UserSchema, 'Users');

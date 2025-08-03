@@ -2,7 +2,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-// 환경 변수에서 키 불러오기 (.env에 설정 필요)
+// 환경 변수에서 키 불러오기 (.env에 설정)
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 

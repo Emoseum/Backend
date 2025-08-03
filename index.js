@@ -44,14 +44,3 @@ connectDB().then(() => {
 }).catch((err) => {
   console.error('Failed to connect to MongoDB:', err);
 });
-
-// // Connect Routers
-// app.use('/auth', authRoutes);
-// app.use('/diary', diaryRoutes);
-// app.use('/image', imageRoutes); // ex: POST /image/upload
-// app.use('/depression', depressionRoutes);
-
-
-// app.listen(PORT, () => {
-//   console.log(`Server running at http://localhost:${PORT}`);
-// });

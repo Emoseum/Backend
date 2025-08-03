@@ -18,7 +18,7 @@ const CesdResultSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: () => new Date(), // ⏱️ 저장은 UTC로
+    default: () => new Date(), // UTC Date
   }
 })
 

@@ -1,8 +1,7 @@
-// 긴급 핫픽스 - updateDiaryFromAI 함수 대체
 export async function updateDiaryFromAI(req, res) {
   try {
     const { diary_id } = req.body;
-    console.log('[서버] 받은 요청 body:', req.body);
+    console.log('[Server] 받은 요청 body:', req.body);
 
     if (!diary_id) {
       return res.status(400).json({ error: 'Missing diary_id' });
@@ -13,8 +12,8 @@ export async function updateDiaryFromAI(req, res) {
       diary_id,
       { 
         $set: {
-          keywords: ['처리완료'],
-          title: '일기',
+          keywords: ['NULL'],
+          title: 'Untitled Dirary',
           updatedAt: new Date().toISOString()
         }
       },
@@ -31,7 +30,7 @@ export async function updateDiaryFromAI(req, res) {
     });
 
   } catch (err) {
-    console.error('서버 오류:', err);
+    console.error('Server Error :', err);
     res.status(500).json({ error: err.message });
   }
 }

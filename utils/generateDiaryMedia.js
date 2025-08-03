@@ -1,5 +1,4 @@
 // utils/generateDiaryMedia.js
-
 import Diary from '../models/Diary.js';
 import { createClient } from '@supabase/supabase-js';
 import 'dotenv/config';
@@ -17,7 +16,7 @@ const supabase = createClient(
 
 export async function generateDiaryMedia(diaryId, text) {
   try {
-    // AI 서버 호출 → 이미지(base64) + 제목 + 키워드 받기
+    // AI 서버 호출 → 이미지 + 제목 + 키워드 받기
     const aiRes = await fetch(`${process.env.AI_SERVER_URL}/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -51,7 +50,7 @@ export async function generateDiaryMedia(diaryId, text) {
 
     const imageUrl = urlData.publicUrl;
 
-    // MongoDB 업데이트 (tags는 저장하지 않음!)
+    // MongoDB 업데이트 (tags는 저장X)
     await Diary.findByIdAndUpdate(diaryId, {
       imagePath: imageUrl,
       title,

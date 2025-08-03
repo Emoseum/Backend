@@ -219,9 +219,6 @@ export async function updateDiaryFromAI(req, res) {
   }
 }
 
-
-
-
 // AI 서버에서 일기 업데이트 받는 함수
 export async function updateFromAISession(req, res) {
   try {

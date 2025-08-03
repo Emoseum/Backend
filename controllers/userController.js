@@ -21,7 +21,7 @@ export const updateUserStyle = async (req, res) => {
       body: JSON.stringify({ user_id: userId })
     });
   } catch (aiError) {
-    console.warn('AI 서버 화풍 업데이트 알림 실패:', aiError.message);
+    console.warn('AI Style Update Failed :', aiError.message);
   }
 
   res.status(200).json({
