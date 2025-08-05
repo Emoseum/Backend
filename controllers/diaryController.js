@@ -52,12 +52,20 @@ export async function getDiaryDetail(req, res) {
 
     const decryptedText = CryptoJS.AES.decrypt(diary.text, secretKey).toString(CryptoJS.enc.Utf8);
 
+    // guided_question 콘솔 출력
+    if (diary.guided_question) {
+      console.log(`[Diary ${id}] Guided Question:`, diary.guided_question);
+    } else {
+      console.log(`[Diary ${id}] No guided question available`);
+    }
+
     res.status(200).json({
       _id: diary._id,
       userId: diary.userId,
       text: decryptedText,
       keywords: diary.keywords || [],
       imagePath: diary.imagePath,
+      guided_question: diary.guided_question || '',
       createdAt: diary.createdAt,
       updatedAt: diary.updatedAt
     });
@@ -196,8 +204,8 @@ export async function updateDiaryFromAI(req, res) {
       diary_id,
       { 
         $set: {
-          keywords: ['처리완료'],
-          title: '일기',
+          keywords: [],
+          title: 'Untitled',
           updatedAt: new Date().toISOString()
         }
       },

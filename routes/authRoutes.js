@@ -19,7 +19,7 @@ router.patch('/style', authenticateToken, updateUserStyle);
 router.patch('/diary/title/:id', authenticateToken, updateDiaryTitle);
 router.patch('/diary/tags/:id', authenticateToken, updateDiaryTags);
 
-// AI 서버용 사용자 정보 조회 (인증 없이)
+// AI 서버용 사용자 정보 조회 (인증 X)
 router.get('/user/:userId', getUserInfoForAI);
 
 export default router;

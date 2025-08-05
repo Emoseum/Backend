@@ -8,7 +8,8 @@ const DiarySchema = new mongoose.Schema({
   keywords: { type: [String], default: [] },    // AI 후처리 키워드
   imagePath: { type: String, default: 'https://fbffiyvnxkshgxepiimj.supabase.co/storage/v1/object/public/emoseum-images//emoseum_icon.png' }, //이미지 URL
   reflection_prompt: { type: String, default: '' },  // AI 생성 이미지 프롬프트
-  title: { type: String, default: null },
+  guided_question: { type: String, default: '' },    // AI 생성 도슨트 메시지
+  title: { type: String, default: 'Untitled' },
   tags: { type: Array, default: [] },
   createdAt: { type: String, required: true },  // ISO 날짜 문자열
   updatedAt: { type: String, default: null }    // 후처리 업데이트용
