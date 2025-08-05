@@ -66,6 +66,7 @@ export async function getDiaryDetail(req, res) {
       keywords: diary.keywords || [],
       imagePath: diary.imagePath,
       guided_question: diary.guided_question || '',
+      vad_scores: diary.vad_scores || [0, 0, 0],
       createdAt: diary.createdAt,
       updatedAt: diary.updatedAt
     });
@@ -95,6 +96,7 @@ export async function getAllDiaries(req, res) {
         keywords: d.keywords || [],
         imagePath: d.imagePath,
         guided_question: d.guided_question || '',
+        vad_scores: d.vad_scores || [0, 0, 0],
         createdAt: d.createdAt
       };
     });
