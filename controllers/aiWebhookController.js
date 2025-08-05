@@ -35,7 +35,7 @@ export async function handleAIWebhook(req, res) {
 
 export async function handleGalleryUpdateWebhook(req, res) {
   try {
-    const { diary_id, keywords, title, guided_question, user_id } = req.body;
+    const { diary_id, keywords, title, guided_question, vad_scores, user_id } = req.body;
 
     if (!diary_id) {
       return res.status(400).json({ error: 'diary_id required' });
@@ -48,6 +48,7 @@ export async function handleGalleryUpdateWebhook(req, res) {
     if (keywords) updateFields.keywords = keywords;
     if (title) updateFields.title = title;
     if (guided_question) updateFields.guided_question = guided_question;
+    if (vad_scores) updateFields.vad_scores = vad_scores;
 
     const result = await Diary.findByIdAndUpdate(
       diary_id,
