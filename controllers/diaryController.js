@@ -94,6 +94,7 @@ export async function getAllDiaries(req, res) {
         tags: d.tags || [],
         keywords: d.keywords || [],
         imagePath: d.imagePath,
+        guided_question: d.guided_question || '',
         createdAt: d.createdAt
       };
     });
