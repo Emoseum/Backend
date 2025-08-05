@@ -193,22 +193,29 @@ export async function updateDiaryTags(req, res) {
 // AI에서 일기 업데이트
 export async function updateDiaryFromAI(req, res) {
   try {
-    const { diary_id } = req.body;
+    const { diary_id, title, keywords, guided_question } = req.body;
     console.log('[서버] 받은 요청 body:', req.body);
 
     if (!diary_id) {
       return res.status(400).json({ error: 'Missing diary_id' });
     }
 
+    // 업데이트할 필드들 준비
+    const updateFields = {
+      updatedAt: new Date().toISOString()
+    };
+
+    // 각 필드가 존재하면 업데이트 객체에 추가
+    if (title !== undefined) updateFields.title = title;
+    if (keywords !== undefined) {
+      // keywords가 문자열이면 배열로 변환
+      updateFields.keywords = typeof keywords === 'string' ? keywords.split(',') : keywords;
+    }
+    if (guided_question !== undefined) updateFields.guided_question = guided_question;
+
     const result = await Diary.findByIdAndUpdate(
       diary_id,
-      { 
-        $set: {
-          keywords: [],
-          title: 'Untitled',
-          updatedAt: new Date().toISOString()
-        }
-      },
+      { $set: updateFields },
       { new: true }
     );
 
