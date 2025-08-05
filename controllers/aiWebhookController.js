@@ -61,6 +61,7 @@ export async function handleGalleryUpdateWebhook(req, res) {
     }
 
     console.log(`Gallery item updated for diary ${diary_id}:`, updateFields);
+    console.log(`Received vad_scores:`, vad_scores);
     res.status(200).json({ message: 'Gallery item updated successfully', diary_id });
 
   } catch (err) {
