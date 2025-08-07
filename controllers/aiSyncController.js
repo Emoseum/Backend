@@ -81,6 +81,8 @@ export const updateAIGalleryItem = async (req, res) => {
   try {
     const { itemId } = req.params;
     const updateData = req.body;
+    
+    console.log('[DEBUG] updateData 전체:', JSON.stringify(updateData, null, 2));
 
     // ai_item_id로 일기 찾기
     const diary = await Diary.findOne({ ai_item_id: itemId });
@@ -132,6 +134,24 @@ export const updateAIGalleryItem = async (req, res) => {
 
     if (updateData.is_completed !== undefined) {
       diary.is_completed = updateData.is_completed;
+    }
+
+    if (updateData.normalized_all) {
+      console.log('[DEBUG] normalized_all 업데이트:', updateData.normalized_all);
+      if (!diary.emotion_analysis) diary.emotion_analysis = {};
+      diary.emotion_analysis.normalized_all = updateData.normalized_all;
+    }
+
+    if (updateData.emotion_categories) {
+      console.log('[DEBUG] emotion_categories 업데이트:', updateData.emotion_categories);
+      if (!diary.emotion_analysis) diary.emotion_analysis = {};
+      diary.emotion_analysis.emotion_categories = updateData.emotion_categories;
+    }
+
+    if (updateData.artwork_description) {
+      console.log('[DEBUG] artwork_description 업데이트:', updateData.artwork_description);
+      if (!diary.artwork_title) diary.artwork_title = {};
+      diary.artwork_title.reflection = updateData.artwork_description;
     }
 
     if (updateData.ai_json) {
