@@ -33,9 +33,16 @@ export const syncAIGalleryItem = async (req, res) => {
       });
     }
 
-    // AI 데이터로 업데이트
+    // AI 데이터로 업데이트 (타입 변환 포함)
     diary.ai_item_id = item_id;
-    diary.emotion_analysis = emotion_analysis || {};
+    
+    if (emotion_analysis) {
+      diary.emotion_analysis = {
+        ...emotion_analysis,
+        intensity: typeof emotion_analysis.intensity === 'string' ? 0.5 : emotion_analysis.intensity
+      };
+    }
+    
     diary.generated_image = generated_image || {};
     diary.artwork_title = artwork_title || { title: 'Untitled', reflection: '' };
     diary.docent_message = docent_message || { message: '', message_type: 'encouragement', personalization_data: {} };
@@ -87,10 +94,15 @@ export const updateAIGalleryItem = async (req, res) => {
 
     // 업데이트 데이터 적용
     if (updateData.emotion_analysis) {
-      diary.emotion_analysis = {
+      const updatedEmotion = {
         ...diary.emotion_analysis.toObject(),
         ...updateData.emotion_analysis
       };
+      // intensity 타입 변환
+      if (typeof updatedEmotion.intensity === 'string') {
+        updatedEmotion.intensity = 0.5;
+      }
+      diary.emotion_analysis = updatedEmotion;
       diary.keywords = updateData.emotion_analysis.keywords || diary.keywords;
       diary.vad_scores = updateData.emotion_analysis.vad_scores || diary.vad_scores;
     }
