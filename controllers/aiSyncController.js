@@ -122,6 +122,10 @@ export const updateAIGalleryItem = async (req, res) => {
       diary.is_completed = updateData.is_completed;
     }
 
+    if (updateData.ai_json) {
+      diary.ai_json = updateData.ai_json;
+    }
+
     diary.updatedAt = new Date().toISOString();
     await diary.save();
 

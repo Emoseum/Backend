@@ -37,6 +37,9 @@ const DiarySchema = new mongoose.Schema({
   journey_stage: { type: String, default: 'the_moment' },
   is_completed: { type: Boolean, default: false },
   
+  // AI 전체 데이터 JSON
+  ai_json: { type: Object, default: null },
+  
   // 기존 필드 (호환성)
   keywords: { type: [String], default: [] },
   imagePath: { type: String, default: 'https://fbffiyvnxkshgxepiimj.supabase.co/storage/v1/object/public/emoseum-images//emoseum_icon.png' },
