@@ -135,7 +135,8 @@ export const updateAIGalleryItem = async (req, res) => {
     }
 
     if (updateData.ai_json) {
-      console.log('[DEBUG] 받은 AI JSON 데이터:', JSON.stringify(updateData.ai_json, null, 2));
+      console.log('[DEBUG] 받은 AI JSON 데이터 크기:', updateData.ai_json.length, 'bytes');
+      console.log('[DEBUG] AI JSON 데이터 샘플:', updateData.ai_json.substring(0, 200) + '...');
       diary.ai_json = updateData.ai_json;
       console.log('[DEBUG] DB에 저장된 AI JSON:', diary.ai_json ? 'SUCCESS' : 'FAILED');
     } else {
