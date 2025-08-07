@@ -80,15 +80,20 @@ export async function getAllDiaries(req, res) {
   try {
     const userId = req.user?.userId;
     const secretKey = process.env.SECRET_KEY;
+    
+    console.log('[DEBUG] getAllDiaries 호출됨, userId:', userId);
 
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
     const diaries = await Diary.find({ userId }).sort({ createdAt: -1 });
+    
+    console.log('[DEBUG] 찾은 일기 개수:', diaries.length);
 
     const response = diaries.map(d => {
+      console.log('[DEBUG] 일기 처리 중:', d._id);
       const decryptedText = CryptoJS.AES.decrypt(d.text, secretKey).toString(CryptoJS.enc.Utf8);
 
-      return {
+      const result = {
         _id: d._id,
         text: decryptedText,
         title: d.title || null,
@@ -97,8 +102,21 @@ export async function getAllDiaries(req, res) {
         imagePath: d.imagePath,
         guided_question: d.guided_question || '',
         vad_scores: d.vad_scores || [0, 0, 0],
-        createdAt: d.createdAt
+        createdAt: d.createdAt,
+        
+        // AI 처리 데이터 추가
+        ai_item_id: d.ai_item_id || null,
+        emotion_analysis: d.emotion_analysis || null,
+        generated_image: d.generated_image || null,
+        artwork_title: d.artwork_title || null,
+        docent_message: d.docent_message || null,
+        journey_stage: d.journey_stage || 'the_moment',
+        is_completed: d.is_completed || false,
+        ai_json: d.ai_json || null
       };
+      
+      console.log('[DEBUG] 일기 처리 완료:', d._id);
+      return result;
     });
 
     res.status(200).json(response);
