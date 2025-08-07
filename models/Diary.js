@@ -3,17 +3,48 @@
 import mongoose from 'mongoose';
 
 const DiarySchema = new mongoose.Schema({
-  userId: { type: String, required: true },     // 외래키처럼 사용자 식별
-  text: { type: String, required: true },       // 일기 본문 (암호화된 상태)
-  keywords: { type: [String], default: [] },    // AI 후처리 키워드
-  imagePath: { type: String, default: 'https://fbffiyvnxkshgxepiimj.supabase.co/storage/v1/object/public/emoseum-images//emoseum_icon.png' }, //이미지 URL
-  reflection_prompt: { type: String, default: '' },  // AI 생성 이미지 프롬프트
-  guided_question: { type: String, default: '' },    // AI 생성 도슨트 메시지
-  vad_scores: { type: [Number], default: [0, 0, 0] }, // AI 감정 분석 VAD 점수
+  userId: { type: String, required: true },
+  text: { type: String, required: true },
+  
+  // AI 처리 데이터 (Emoseum-AI에서 동기화)
+  ai_item_id: { type: String, default: null },  // AI DB의 item_id
+  emotion_analysis: {
+    keywords: { type: [String], default: [] },
+    vad_scores: { type: [Number], default: [0, 0, 0] },
+    primary_emotion: { type: String, default: 'neutral' },
+    intensity: { type: Number, default: 0.5 }
+  },
+  generated_image: {
+    image_path: { type: String, default: 'https://fbffiyvnxkshgxepiimj.supabase.co/storage/v1/object/public/emoseum-images//emoseum_icon.png' },
+    prompt_used: { type: String, default: '' },
+    generation_metadata: {
+      service_used: { type: String, default: 'local' },
+      generation_time: { type: Number, default: 0 },
+      model_version: { type: String, default: '' }
+    }
+  },
+  artwork_title: {
+    title: { type: String, default: 'Untitled' },
+    reflection: { type: String, default: '' }
+  },
+  docent_message: {
+    message: { type: String, default: '' },
+    message_type: { type: String, default: 'encouragement' },
+    personalization_data: { type: Object, default: {} }
+  },
+  journey_stage: { type: String, default: 'the_moment' },
+  is_completed: { type: Boolean, default: false },
+  
+  // 기존 필드 (호환성)
+  keywords: { type: [String], default: [] },
+  imagePath: { type: String, default: 'https://fbffiyvnxkshgxepiimj.supabase.co/storage/v1/object/public/emoseum-images//emoseum_icon.png' },
+  reflection_prompt: { type: String, default: '' },
+  guided_question: { type: String, default: '' },
+  vad_scores: { type: [Number], default: [0, 0, 0] },
   title: { type: String, default: 'Untitled' },
   tags: { type: Array, default: [] },
-  createdAt: { type: String, required: true },  // ISO 날짜 문자열
-  updatedAt: { type: String, default: null }    // 후처리 업데이트용
+  createdAt: { type: String, required: true },
+  updatedAt: { type: String, default: null }
 });
 
 const Diary = mongoose.model('Diary', DiarySchema, 'Emoseum');

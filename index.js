@@ -12,6 +12,7 @@ import depressionRoutes from './routes/depressionRoutes.js';
 import questionRoutes from './routes/questionRoutes.js';
 import aiWebhookRoutes from './routes/aiWebhookRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import aiSyncRoutes from './routes/aiSyncRoutes.js';
 
 import aiRoutes from './routes/aiRoutes.js';
 
@@ -36,6 +37,7 @@ connectDB().then(() => {
   app.use('/question', questionRoutes);
   app.use('/webhook', aiWebhookRoutes);
   app.use('/user', userRoutes);
+  app.use('/ai-sync', aiSyncRoutes);
   app.use('/api', aiRoutes);
 
   app.listen(PORT, () => {
