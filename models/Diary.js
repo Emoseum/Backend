@@ -6,13 +6,15 @@ const DiarySchema = new mongoose.Schema({
   userId: { type: String, required: true },
   text: { type: String, required: true },
   
-  // AI 처리 데이터 (Emoseum-AI에서 동기화)
-  ai_item_id: { type: String, default: null },  // AI DB의 item_id
+  // AI 처리 데이터 (GALLERY_ITEM_SCHEMA 기반)
+  ai_item_id: { type: String, default: null },
   emotion_analysis: {
     keywords: { type: [String], default: [] },
     vad_scores: { type: [Number], default: [0, 0, 0] },
     primary_emotion: { type: String, default: 'neutral' },
-    intensity: { type: Number, default: 0.5 }
+    intensity: { type: Number, default: 0.5 },
+    normalized_all: { type: Object, default: {} },
+    emotion_categories: { type: Object, default: {} }
   },
   generated_image: {
     image_path: { type: String, default: 'https://fbffiyvnxkshgxepiimj.supabase.co/storage/v1/object/public/emoseum-images//emoseum_icon.png' },
