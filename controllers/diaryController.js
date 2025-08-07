@@ -91,7 +91,7 @@ export async function getAllDiaries(req, res) {
 
     const response = diaries.map(d => {
       console.log('[DEBUG] 일기 처리 중:', d._id);
-      const decryptedText = CryptoJS.AES.decrypt(d.text, secretKey).toString(CryptoJS.enc.Utf8);
+      const decryptedText = d.text; // 복호화 없이 원문 사용
 
       const result = {
         _id: d._id,
