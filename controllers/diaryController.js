@@ -20,12 +20,12 @@ export async function writeDiary(req, res) {
     const { text } = req.body;
     if (!text) return res.status(400).json({ error: 'Text is required' });
 
-    const encryptedText = CryptoJS.AES.encrypt(text, secretKey).toString();
+    // 원문 저장 (암호화 제거)
     const placeholderImage = 'https://fbffiyvnxkshgxepiimj.supabase.co/storage/v1/object/public/emoseum-images/emoseum_icon.png';
 
     const diary = new Diary({
       userId,
-      text: encryptedText,
+      text: text, // 원문 저장
       imagePath: placeholderImage,
       createdAt: new Date().toISOString()
     });
