@@ -8,7 +8,8 @@ import {
   updateDiaryTitle,
   updateDiaryTags,
   updateDiaryFromAI,
-  updateFromAISession
+  updateFromAISession,
+  getDiaryImage
 } from '../controllers/diaryController.js';
 
 import { authenticateToken } from '../middleware/authenticateToken.js';
@@ -20,6 +21,7 @@ router.post('/update', updateDiaryFromAI);
 router.post('/updateFromAISession', updateFromAISession);
 router.get('/all', authenticateToken, getAllDiaries);
 router.get('/detail/:id', authenticateToken, getDiaryDetail); 
+router.get('/image/:id', authenticateToken, getDiaryImage);
 router.delete('/delete/:id', authenticateToken, deleteDiary);
 router.patch('/title/:id', authenticateToken, updateDiaryTitle);
 router.patch('/tags/:id', authenticateToken, updateDiaryTags);

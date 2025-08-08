@@ -282,3 +282,19 @@ export async function updateFromAISession(req, res) {
     res.status(500).json({ success: false, error: error.message });
   }
 }
+
+// 일기 이미지 경로만 조회
+export async function getDiaryImage(req, res) {
+  try {
+    const { id } = req.params;
+    
+    const diary = await Diary.findById(id).select('imagePath');
+    if (!diary) {
+      return res.status(404).json({ error: 'Diary not found' });
+    }
+    
+    res.status(200).json({ imagePath: diary.imagePath || '' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
